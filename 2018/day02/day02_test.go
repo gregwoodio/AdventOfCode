@@ -1,9 +1,10 @@
 package day02
 
 import (
-	"aocutil"
 	"fmt"
 	"testing"
+
+	"github.com/gregwoodio/aocutil"
 )
 
 type testData1 struct {
@@ -40,6 +41,10 @@ func TestSolvePartOne(t *testing.T) {
 }
 
 func TestSolvePartOneActual(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping actual solution run.")
+	}
+
 	input := aocutil.ReadStringsFromFile("./day02_input.txt")
 	result := solvePartOne(input)
 	fmt.Println(result)
@@ -69,6 +74,10 @@ func TestSolvePartTwo(t *testing.T) {
 }
 
 func TestSolvePartTwoActual(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping actual solution run.")
+	}
+
 	input := aocutil.ReadStringsFromFile("./day02_input.txt")
 	result := solvePartTwo(input)
 	fmt.Println(result)
