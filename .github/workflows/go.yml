@@ -26,5 +26,5 @@ jobs:
 
     - name: Test
       run: |
-        go test -short -coverprofile="cover.out" ./...
+        go test -v -short -coverprofile="cover.out" ./...
         go tool cover -func="cover.out"

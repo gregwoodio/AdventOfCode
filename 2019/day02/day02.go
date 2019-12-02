@@ -16,6 +16,26 @@ func solvePartOne(input string) int {
 	return processIntcode(inst)
 }
 
+func solvePartTwo(input string) int {
+	target := 19690720
+
+	for noun := 0; noun <= 99; noun++ {
+		for verb := 0; verb <= 99; verb++ {
+			inst := parseInput(input)
+
+			inst[1] = noun
+			inst[2] = verb
+
+			if processIntcode(inst) == target {
+				return 100*noun + verb
+			}
+		}
+	}
+
+	log.Fatal("Did not find a noun and verb pair that returned the target value")
+	return -1
+}
+
 func processIntcode(inst []int) int {
 	op := 0
 
