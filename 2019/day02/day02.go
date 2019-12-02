@@ -18,22 +18,36 @@ func solvePartOne(input string) int {
 
 func solvePartTwo(input string) int {
 	target := 19690720
+	ch := make(chan int)
+	stop := make(chan bool)
+	var result int
 
 	for noun := 0; noun <= 99; noun++ {
-		for verb := 0; verb <= 99; verb++ {
-			inst := parseInput(input)
+		// go innerLoop(target, input, noun, ch, stop)
+		go func(noun int) {
+			for verb := 0; verb <= 99; verb++ {
+				select {
+				default:
+					inst := parseInput(input)
 
-			inst[1] = noun
-			inst[2] = verb
+					inst[1] = noun
+					inst[2] = verb
 
-			if processIntcode(inst) == target {
-				return 100*noun + verb
+					if processIntcode(inst) == target {
+						ch <- 100*noun + verb
+					}
+					break
+				case <-stop:
+					return
+				}
 			}
-		}
+		}(noun)
 	}
 
-	log.Fatal("Did not find a noun and verb pair that returned the target value")
-	return -1
+	result = <-ch
+	stop <- true
+
+	return result
 }
 
 func processIntcode(inst []int) int {
