@@ -20,10 +20,14 @@ func solvePartTwo(input string) int {
 	target := 19690720
 	ch := make(chan int)
 	stop := make(chan bool)
+
+	defer close(ch)
+	defer close(stop)
+
 	var result int
 
 	for noun := 0; noun <= 99; noun++ {
-		// go innerLoop(target, input, noun, ch, stop)
+
 		go func(noun int) {
 			for verb := 0; verb <= 99; verb++ {
 				select {

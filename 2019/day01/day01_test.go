@@ -33,7 +33,7 @@ func TestSolvePartOne(t *testing.T) {
 	}
 
 	for _, td := range testDatas {
-		actual := SolvePartOne(td.input)
+		actual := solvePartOne(td.input)
 		if actual != td.expected {
 			t.Errorf("Expected %d but was %d\n", td.expected, actual)
 		}
@@ -46,7 +46,7 @@ func TestSolvePartOneActual(t *testing.T) {
 	}
 
 	input := aocutil.ReadIntsFromFile("./day01_input.txt")
-	solution := SolvePartOne(input)
+	solution := solvePartOne(input)
 
 	fmt.Println(solution)
 }
@@ -68,7 +68,7 @@ func TestSolvePartTwo(t *testing.T) {
 	}
 
 	for _, td := range testDatas {
-		actual := SolvePartTwo(td.input)
+		actual := solvePartTwo(td.input)
 		if actual != td.expected {
 			t.Errorf("Expected %d but was %d\n", td.expected, actual)
 		}
@@ -81,7 +81,7 @@ func TestSolvePartTwoActual(t *testing.T) {
 	}
 
 	input := aocutil.ReadIntsFromFile("./day01_input.txt")
-	solution := SolvePartTwo(input)
+	solution := solvePartTwo(input)
 
 	fmt.Println(solution)
 }
