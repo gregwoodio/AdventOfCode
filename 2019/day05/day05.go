@@ -14,43 +14,10 @@ func solvePartOne(input string, reader io.Reader) int {
 	return processIntcode(inst, reader)
 }
 
-// func solvePartTwo(input string) int {
-// 	target := 19690720
-// 	ch := make(chan int)
-// 	stop := make(chan bool)
-
-// 	defer close(ch)
-// 	defer close(stop)
-
-// 	var result int
-
-// 	for noun := 0; noun <= 99; noun++ {
-
-// 		go func(noun int) {
-// 			for verb := 0; verb <= 99; verb++ {
-// 				select {
-// 				default:
-// 					inst := parseInput(input)
-
-// 					inst[1] = noun
-// 					inst[2] = verb
-
-// 					if processIntcode(inst) == target {
-// 						ch <- 100*noun + verb
-// 					}
-// 					break
-// 				case <-stop:
-// 					return
-// 				}
-// 			}
-// 		}(noun)
-// 	}
-
-// 	result = <-ch
-// 	stop <- true
-
-// 	return result
-// }
+func solvePartTwo(input string, reader io.Reader) int {
+	inst := parseInput(input)
+	return processIntcode(inst, reader)
+}
 
 func processIntcode(inst []int, input io.Reader) int {
 	ip := 0
@@ -60,7 +27,7 @@ func processIntcode(inst []int, input io.Reader) int {
 	for {
 		operation := inst[ip] % 10
 
-		if operation != 1 && operation != 2 && operation != 3 && operation != 4 {
+		if operation < 1 || operation > 8 {
 			return inst[0]
 		}
 
@@ -73,7 +40,10 @@ func processIntcode(inst []int, input io.Reader) int {
 			p1 = &inst[inst[ip+1]]
 		}
 
-		if operation == 1 || operation == 2 {
+		if operation == 3 || operation == 4 {
+			isParam2Immediate = false
+			isParam3Immediate = false
+		} else {
 			isParam2Immediate = (inst[ip]/1000)%10 == 1
 			isParam3Immediate = false //(inst[ip]/10000)%10 == 1
 
@@ -83,14 +53,13 @@ func processIntcode(inst []int, input io.Reader) int {
 				p2 = &inst[inst[ip+2]]
 			}
 
-			if isParam3Immediate {
-				p3 = &inst[ip+3]
-			} else {
-				p3 = &inst[inst[ip+3]]
+			if operation != 5 && operation != 6 {
+				if isParam3Immediate {
+					p3 = &inst[ip+3]
+				} else {
+					p3 = &inst[inst[ip+3]]
+				}
 			}
-		} else {
-			isParam2Immediate = false
-			isParam3Immediate = false
 		}
 
 		if operation == 1 {
@@ -124,7 +93,38 @@ func processIntcode(inst []int, input io.Reader) int {
 			// output
 			fmt.Printf("Output: %d\n", *p1)
 			ip += 2
+		} else if operation == 5 {
+			// jump if true
+			if *p1 != 0 {
+				ip = *p2
+			} else {
+				ip += 3
+			}
+		} else if operation == 6 {
+			// jump if false
+			if *p1 == 0 {
+				ip = *p2
+			} else {
+				ip += 3
+			}
+		} else if operation == 7 {
+			// less than
+			if *p1 < *p2 {
+				*p3 = 1
+			} else {
+				*p3 = 0
+			}
+			ip += 4
+		} else if operation == 8 {
+			// equals
+			if *p1 == *p2 {
+				*p3 = 1
+			} else {
+				*p3 = 0
+			}
+			ip += 4
 		}
+
 	}
 }
 
