@@ -2,19 +2,27 @@ package day07
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/gregwoodio/aoc2019shared"
 	"github.com/gregwoodio/aocutil"
 )
 
-func solvePartOne(input string) int {
+func solve(input string, isPartTwo bool) int {
+	var initialSettings []int
 
-	permutations := aocutil.Permutations([]int{0, 1, 2, 3, 4})
+	if !isPartTwo {
+		initialSettings = []int{0, 1, 2, 3, 4}
+	} else {
+		initialSettings = []int{5, 6, 7, 8, 9}
+	}
+
+	permutations := aocutil.Permutations(initialSettings)
 	max := 0
 	maxOrder := make([]int, 5)
 
 	for _, perm := range permutations {
-		curr := processPermutation(input, perm)
+		curr := processPermutation(input, perm, isPartTwo)
 
 		if curr > max {
 			max = curr
@@ -31,7 +39,7 @@ func solvePartOne(input string) int {
 	return max
 }
 
-func processPermutation(instructions string, input []int) int {
+func processPermutation(instructions string, input []int, isPartTwo bool) int {
 	amps := []*aoc2019shared.IntCodeInterpreter{
 		aoc2019shared.NewIntCodeInterpreter("Amp A", instructions),
 		aoc2019shared.NewIntCodeInterpreter("Amp B", instructions),
@@ -46,40 +54,26 @@ func processPermutation(instructions string, input []int) int {
 	amps[3].Input = amps[2].Output
 	amps[4].Input = amps[3].Output
 
+	if isPartTwo {
+		amps[0].Input = amps[4].Output
+	}
+
+	var wg sync.WaitGroup
+
 	for i, amp := range amps {
 		amp.Input <- input[i]
 		if i == 0 {
 			amp.Input <- 0
 		}
 
-		go amp.Process()
-	}
-
-	allDone := make([]bool, 5)
-	for {
-		select {
-		case val := <-amps[4].Output:
-			return val
-		case allDone[0] = <-amps[0].Done:
-			if allDone[0] && allDone[1] && allDone[2] && allDone[3] && allDone[4] {
-				return *amps[4].LastOutput
-			}
-		case allDone[1] = <-amps[1].Done:
-			if allDone[0] && allDone[1] && allDone[2] && allDone[3] && allDone[4] {
-				return *amps[4].LastOutput
-			}
-		case allDone[2] = <-amps[2].Done:
-			if allDone[0] && allDone[1] && allDone[2] && allDone[3] && allDone[4] {
-				return *amps[4].LastOutput
-			}
-		case allDone[3] = <-amps[3].Done:
-			if allDone[0] && allDone[1] && allDone[2] && allDone[3] && allDone[4] {
-				return *amps[4].LastOutput
-			}
-		case allDone[4] = <-amps[4].Done:
-			if allDone[0] && allDone[1] && allDone[2] && allDone[3] && allDone[4] {
-				return *amps[4].LastOutput
-			}
+		if i == 4 {
+			wg.Add(1)
+			go amp.Process(&wg)
+		} else {
+			go amp.Process(nil)
 		}
 	}
+
+	wg.Wait()
+	return <-amps[4].Output
 }

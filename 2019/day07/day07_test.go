@@ -29,7 +29,7 @@ func TestSolvePartOne(t *testing.T) {
 	}
 
 	for _, td := range testDatas {
-		result := solvePartOne(td.input)
+		result := solve(td.input, false)
 		fmt.Println(result)
 	}
 }
@@ -41,6 +41,35 @@ func TestSolvePartOneActual(t *testing.T) {
 
 	input := aocutil.ReadStringsFromFile("./day07_input.txt")
 
-	result := solvePartOne(input[0])
+	result := solve(input[0], false)
+	fmt.Println(result)
+}
+
+func TestSolvePartTwo(t *testing.T) {
+	testDatas := []testData{
+		testData{
+			input:    "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5",
+			expected: 139629729,
+		},
+		// testData{
+		// 	input:    "3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10",
+		// 	expected: 18216,
+		// },
+	}
+
+	for _, td := range testDatas {
+		result := solve(td.input, true)
+		fmt.Println(result)
+	}
+}
+
+func TestSolvePartTwoActual(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping actual solution run.")
+	}
+
+	input := aocutil.ReadStringsFromFile("./day07_input.txt")
+
+	result := solve(input[0], true)
 	fmt.Println(result)
 }
