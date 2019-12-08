@@ -1,7 +1,6 @@
 package day05
 
 import (
-	"bytes"
 	"fmt"
 	"testing"
 
@@ -21,15 +20,9 @@ func TestSolvePartOne(t *testing.T) {
 
 	input := aocutil.ReadStringsFromFile("./day05_input.txt")
 
-	var mockInput bytes.Buffer
-	mockInput.Write([]byte("1\n"))
+	result := solve(input[0], 1)
 
-	var mockOutput bytes.Buffer
-
-	result := solve(input[0], &mockInput, &mockOutput)
-	strOut := string(mockOutput.Bytes())
-
-	fmt.Printf("Done: \n\t0th index: %d\n\tOutput: %s\n", result, strOut)
+	fmt.Printf("Done:\n\tOutput: %d\n", result)
 
 }
 
@@ -40,13 +33,7 @@ func TestSolvePartTwo(t *testing.T) {
 
 	input := aocutil.ReadStringsFromFile("./day05_input.txt")
 
-	var mockInput bytes.Buffer
-	mockInput.Write([]byte("5\n"))
+	result := solve(input[0], 5)
 
-	var mockOutput bytes.Buffer
-
-	result := solve(input[0], &mockInput, &mockOutput)
-	strOut := string(mockOutput.Bytes())
-
-	fmt.Printf("Done: \n\t0th index: %d\n\tOutput: %s\n", result, strOut)
+	fmt.Printf("Done:\n\tOutput: %d\n", result)
 }
