@@ -1,24 +1,28 @@
 package day05
 
 import (
-	"fmt"
+	"sync"
 
 	"github.com/gregwoodio/aoc2019shared"
 )
 
 func solve(instructions string, input int) int {
-	ici := aoc2019shared.NewIntCodeInterpreter(instructions)
-	go ici.Process()
+	ici := aoc2019shared.NewIntCodeInterpreter("aoc", instructions)
+	var wg sync.WaitGroup
 
+	go func(out chan int) {
+		for {
+			// just grab and ignore all output from the interpreter
+			<-out
+		}
+	}(ici.Output)
+
+	wg.Add(1)
 	ici.Input <- input
 
-	for {
-		select {
-		case o := <-ici.Output:
-			fmt.Println(o)
+	go ici.Process(&wg)
 
-		case <-ici.Done:
-			return *ici.LastOutput
-		}
-	}
+	wg.Wait()
+
+	return *ici.LastOutput
 }
