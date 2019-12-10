@@ -8,7 +8,7 @@ import (
 	"github.com/gregwoodio/aocutil"
 )
 
-func solve(input string, isPartTwo bool) int {
+func solve(input string, isPartTwo bool) int64 {
 	var initialSettings []int
 
 	if !isPartTwo {
@@ -18,11 +18,13 @@ func solve(input string, isPartTwo bool) int {
 	}
 
 	permutations := aocutil.Permutations(initialSettings)
-	max := 0
+	var max int64
 	maxOrder := make([]int, 5)
 
 	for _, perm := range permutations {
-		curr := processPermutation(input, perm, isPartTwo)
+		perm64 := toInt64Slice(perm)
+
+		curr := processPermutation(input, perm64, isPartTwo)
 
 		if curr > max {
 			max = curr
@@ -39,7 +41,7 @@ func solve(input string, isPartTwo bool) int {
 	return max
 }
 
-func processPermutation(instructions string, input []int, isPartTwo bool) int {
+func processPermutation(instructions string, input []int64, isPartTwo bool) int64 {
 	amps := []*aoc2019shared.IntCodeInterpreter{
 		aoc2019shared.NewIntCodeInterpreter("Amp A", instructions),
 		aoc2019shared.NewIntCodeInterpreter("Amp B", instructions),
@@ -76,4 +78,14 @@ func processPermutation(instructions string, input []int, isPartTwo bool) int {
 
 	wg.Wait()
 	return <-amps[4].Output
+}
+
+func toInt64Slice(slice []int) []int64 {
+	newSlice := []int64{}
+
+	for _, val := range slice {
+		newSlice = append(newSlice, int64(val))
+	}
+
+	return newSlice
 }
