@@ -6,11 +6,11 @@ import (
 	"github.com/gregwoodio/aoc2019shared"
 )
 
-func solve(instructions string, input int) int {
+func solve(instructions string, input int64) int64 {
 	ici := aoc2019shared.NewIntCodeInterpreter("aoc", instructions)
 	var wg sync.WaitGroup
 
-	go func(out chan int) {
+	go func(out chan int64) {
 		for {
 			// just grab and ignore all output from the interpreter
 			<-out
@@ -24,5 +24,5 @@ func solve(instructions string, input int) int {
 
 	wg.Wait()
 
-	return *ici.LastOutput
+	return ici.LastOutput
 }

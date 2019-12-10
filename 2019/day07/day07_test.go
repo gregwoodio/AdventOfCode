@@ -9,7 +9,7 @@ import (
 
 type testData struct {
 	input    string
-	expected int
+	expected int64
 }
 
 func TestSolvePartOne(t *testing.T) {
