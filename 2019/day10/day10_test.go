@@ -1,6 +1,11 @@
 package day10
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/gregwoodio/aocutil"
+)
 
 type testData struct {
 	input    []string
@@ -9,6 +14,21 @@ type testData struct {
 
 func TestSolvePartOne(t *testing.T) {
 	testCases := []testData{
+		// testData{
+		// 	input: []string{
+		// 		"#.........",
+		// 		"...#......",
+		// 		"...#..#...",
+		// 		".####....#",
+		// 		"..#.#.#...",
+		// 		".....#....",
+		// 		"..###.#.##",
+		// 		".......#..",
+		// 		"....#...#.",
+		// 		"...#..#..#",
+		// 	},
+		// 	expected: 7,
+		// },
 		testData{
 			input: []string{
 				".#..#",
@@ -42,4 +62,10 @@ func TestSolvePartOne(t *testing.T) {
 			t.Errorf("Expected %d but was %d\n", td.expected, actual)
 		}
 	}
+}
+
+func TestSolvePartOneActual(t *testing.T) {
+	input := aocutil.ReadStringsFromFile("./day10_input.txt")
+	result := solvePartOne(input)
+	fmt.Println(result)
 }

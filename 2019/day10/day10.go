@@ -1,11 +1,16 @@
 package day10
 
-import "github.com/gregwoodio/aocutil"
+import (
+	"fmt"
+
+	"github.com/gregwoodio/aocutil"
+)
 
 func solvePartOne(input []string) int {
 	asteroids := []aocutil.Coord{}
 	grid := [][]bool{}
 	counts := [][]int{}
+	var bestLocation aocutil.Coord
 
 	// build grid
 	for y, line := range input {
@@ -29,138 +34,66 @@ func solvePartOne(input []string) int {
 	for _, ast := range asteroids {
 		count := 0
 		counted := [][]bool{}
+
 		for _, line := range input {
 			counted = append(counted, make([]bool, len(line)))
 		}
 
-		for x := 0; x < len(grid[0])-1; x++ {
-			top := aocutil.Coord{
-				X: x,
-				Y: 0,
-			}
-			dx, dy := top.GetSlope(&ast)
-			tx := ast.X
-			ty := ast.Y
-
-			if dx == 0 && dy == 0 {
-				continue
-			}
-
-			for {
-				tx += dx
-				ty += dy
-
-				// out of bounds
-				if tx >= len(grid[0]) || ty >= len(grid) || tx < 0 || ty < 0 {
-					break
+		for x := 0; x < len(grid[0]); x++ {
+			for y := 0; y < len(grid); y++ {
+				if x == ast.X && y == ast.Y {
+					continue
 				}
 
-				if grid[ty][tx] && !counted[ty][tx] {
-					count++
-					counts[ast.Y][ast.X]++
-					counted[ty][tx] = true
-					break
+				target := aocutil.Coord{
+					X: x,
+					Y: y,
 				}
-			}
-		}
-
-		for x := 0; x < len(grid[0])-1; x++ {
-			bottom := aocutil.Coord{
-				X: x,
-				Y: len(grid) - 1,
-			}
-			dx, dy := bottom.GetSlope(&ast)
-			tx := ast.X
-			ty := ast.Y
-
-			if dx == 0 && dy == 0 {
-				continue
-			}
-
-			for {
-				tx += dx
-				ty += dy
-
-				// out of bounds
-				if tx >= len(grid[0]) || ty >= len(grid) || tx < 0 || ty < 0 {
-					break
-				}
-
-				if grid[ty][tx] && !counted[ty][tx] {
-					count++
-					counts[ast.Y][ast.X]++
-					counted[ty][tx] = true
-					break
-				}
-			}
-		}
-
-		for y := 0; y < len(grid)-1; y++ {
-			left := aocutil.Coord{
-				X: 0,
-				Y: y,
-			}
-			dx, dy := left.GetSlope(&ast)
-			tx := ast.X
-			ty := ast.Y
-
-			if dx == 0 && dy == 0 {
-				continue
-			}
-
-			for {
-				tx += dx
-				ty += dy
-
-				// out of bounds
-				if tx >= len(grid[0]) || ty >= len(grid) || tx < 0 || ty < 0 {
-					break
-				}
-
-				if grid[ty][tx] && !counted[ty][tx] {
-					count++
-					counts[ast.Y][ast.X]++
-					counted[ty][tx] = true
-					break
-				}
-			}
-		}
-
-		for y := 0; y < len(grid)-1; y++ {
-			bottom := aocutil.Coord{
-				X: len(grid[0]) - 1,
-				Y: y,
-			}
-			dx, dy := bottom.GetSlope(&ast)
-			tx := ast.X
-			ty := ast.Y
-
-			if dx == 0 && dy == 0 {
-				continue
-			}
-
-			for {
-				tx += dx
-				ty += dy
-
-				// out of bounds
-				if tx >= len(grid[0]) || ty >= len(grid) || tx < 0 || ty < 0 {
-					break
-				}
-
-				if grid[ty][tx] && !counted[ty][tx] {
-					count++
-					counts[ast.Y][ast.X]++
-					counted[ty][tx] = true
-					break
-				}
+				count += countNeighbours(&ast, &target, &grid, &counted, &counts)
 			}
 		}
 
 		if count > max {
 			max = count
+			bestLocation = ast
 		}
 	}
 
+	fmt.Printf("Best station location: %d, %d\n", bestLocation.X, bestLocation.Y)
 	return max
+}
+
+func countNeighbours(current, target *aocutil.Coord, grid *[][]bool, counted *[][]bool, counts *[][]int) int {
+	dx, dy := target.GetSlope(current)
+	tx := current.X
+	ty := current.Y
+	count := 0
+
+	if dx == 0 && dy == 0 {
+		return count
+	}
+
+	for {
+		tx += dx
+		ty += dy
+
+		// out of bounds
+		if tx >= len((*grid)[0]) || ty >= len(*grid) || tx < 0 || ty < 0 {
+			break
+		}
+
+		if (*grid)[ty][tx] && !(*counted)[ty][tx] {
+			// square has an asteroid that hasn't been counted yet
+			count++
+			(*counts)[current.Y][current.X]++
+			(*counted)[ty][tx] = true
+			break
+		} else if (*grid)[ty][tx] {
+			// square has an asteroid that has been counted, so we're done searching
+			break
+		}
+		// else keep searching
+	}
+
+	return count
 }
