@@ -10,19 +10,24 @@ func solve(instructions string, input int64) int64 {
 	ici := aoc2019shared.NewIntCodeInterpreter("aoc", instructions)
 	var wg sync.WaitGroup
 
-	go func(out chan int64) {
-		for {
-			// just grab and ignore all output from the interpreter
-			<-out
-		}
-	}(ici.Output)
+	output := make(chan int64)
+	defer close(output)
+	go receiver(ici.Output, output)
 
 	wg.Add(1)
-	ici.Input <- input
-
 	go ici.Process(&wg)
-
+	ici.Input <- input
 	wg.Wait()
 
-	return ici.LastOutput
+	return <-output
+}
+
+func receiver(in, out chan int64) {
+	for {
+		val := <-in
+		if val != 0 {
+			out <- val
+			return
+		}
+	}
 }
