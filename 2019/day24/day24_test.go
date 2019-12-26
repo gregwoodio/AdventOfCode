@@ -62,3 +62,27 @@ func TestSolvePartOneActual(t *testing.T) {
 	result := solvePartOne(input)
 	fmt.Println(result)
 }
+
+func TestSolvePartTwo(t *testing.T) {
+	bugs := solvePartTwo([]string{
+		"....#",
+		"#..#.",
+		"#.?##",
+		"..#..",
+		"#....",
+	}, 10)
+
+	if bugs != 99 {
+		t.Errorf("Expected bug count to be 99 but was %d\n", bugs)
+	}
+}
+
+func TestSolvePartTwoActual(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping actual solution run.")
+	}
+
+	input := aocutil.ReadStringsFromFile("./day24_input.txt")
+	result := solvePartTwo(input, 200)
+	fmt.Println(result)
+}
