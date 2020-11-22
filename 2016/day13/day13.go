@@ -77,16 +77,37 @@ func (ps *pointStack) len() int {
 }
 
 func solvePartOne(rows, cols, tX, tY, designerNum int) int {
-	maze := makeMaze(rows, cols, tX, tY, designerNum)
+	maze, _ := makeMaze(rows, cols, tX, tY, designerNum)
 	return solveMaze(maze)
 }
 
 func solvePartTwo(rows, cols, designerNum int) int {
-	maze := makeMaze(rows, cols, -1, -1, designerNum)
-	return solveMazePartTwo(maze)
+	maze, allPoints := makeMaze(rows, cols, -1, -1, designerNum)
+	solveMazePartTwo(maze)
+
+	total := 0
+	for row := 0; row < rows; row++ {
+		for col := 0; col < cols; col++ {
+			p := allPoints[row][col]
+			if p.isWall {
+				fmt.Print("#")
+			} else if p.visited && p.depth <= 50 {
+				total++
+				fmt.Print(p.depth % 10)
+			} else if p.visited {
+				fmt.Print("/")
+			} else {
+				fmt.Print(".")
+			}
+
+		}
+		fmt.Print("\n")
+	}
+
+	return total
 }
 
-func makeMaze(rows, cols, tX, tY, designerNum int) *maze {
+func makeMaze(rows, cols, tX, tY, designerNum int) (*maze, [][]*point) {
 	m := maze{}
 
 	points := [][]*point{}
@@ -98,12 +119,14 @@ func makeMaze(rows, cols, tX, tY, designerNum int) *maze {
 				x:          col,
 				y:          row,
 				neighbours: []*point{},
+				depth:      1000,
 			}
 			isWall(&p, designerNum)
 			points[row] = append(points[row], &p)
 
 			// look for start and target
 			if row == 1 && col == 1 {
+				p.depth = 0
 				m.start = &p
 			}
 
@@ -123,19 +146,10 @@ func makeMaze(rows, cols, tX, tY, designerNum int) *maze {
 					points[row][col-1].neighbours = append(points[row][col-1].neighbours, &p)
 				}
 			}
-
-			// drawing for debug
-			if p.isWall {
-				fmt.Print("#")
-			} else {
-				fmt.Print(".")
-			}
 		}
-
-		fmt.Print("\n")
 	}
 
-	return &m
+	return &m, points
 }
 
 func isWall(p *point, designerNum int) {
@@ -187,13 +201,18 @@ func solveMazePartTwo(m *maze) int {
 		}
 
 		p := stack.pop()
-		if p.depth <= 50 && !p.visited {
+		if !p.visited {
 			p.visited = true
-			total++
 
 			for _, neighbour := range p.neighbours {
-				if !neighbour.visited {
+				if neighbour.depth > p.depth+1 {
 					neighbour.depth = p.depth + 1
+					// to find the shortest path, re-add visited nodes if the neighbour depth is bigger than p.depth+1
+					neighbour.visited = false
+					stack.push(neighbour)
+				}
+
+				if !neighbour.visited {
 					stack.push(neighbour)
 				}
 			}
