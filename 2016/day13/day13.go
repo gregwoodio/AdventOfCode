@@ -48,42 +48,14 @@ func (pq *pointQueue) len() int {
 	return len(pq.points)
 }
 
-type pointStack struct {
-	points []*point
-}
-
-func newPointStack() *pointStack {
-	return &pointStack{
-		points: []*point{},
-	}
-}
-
-func (ps *pointStack) push(p *point) {
-	ps.points = append([]*point{p}, ps.points...)
-}
-
-func (ps *pointStack) pop() *point {
-	if len(ps.points) == 0 {
-		panic("Nothing in stack!")
-	}
-
-	point := ps.points[0]
-	ps.points = ps.points[1:]
-	return point
-}
-
-func (ps *pointStack) len() int {
-	return len(ps.points)
-}
-
 func solvePartOne(rows, cols, tX, tY, designerNum int) int {
 	maze, _ := makeMaze(rows, cols, tX, tY, designerNum)
 	return solveMaze(maze)
 }
 
-func solvePartTwo(rows, cols, designerNum int) int {
-	maze, allPoints := makeMaze(rows, cols, -1, -1, designerNum)
-	solveMazePartTwo(maze)
+func solvePartTwo(rows, cols, tX, tY, designerNum int) int {
+	maze, allPoints := makeMaze(rows, cols, tX, tY, designerNum)
+	solveMaze(maze)
 
 	total := 0
 	for row := 0; row < rows; row++ {
@@ -173,48 +145,16 @@ func solveMaze(m *maze) int {
 
 	for {
 		p := queue.dequeue()
+		p.visited = true
 
 		if p.x == m.target.x && p.y == m.target.y {
 			return p.depth
 		}
 
-		p.visited = true
-
 		for _, neighbour := range p.neighbours {
 			if neighbour.visited == false {
 				neighbour.depth = p.depth + 1
 				queue.enqueue(neighbour)
-			}
-		}
-	}
-}
-
-func solveMazePartTwo(m *maze) int {
-	//dfs
-	total := 0
-	stack := newPointStack()
-	stack.push(m.start)
-
-	for {
-		if stack.len() == 0 {
-			return total
-		}
-
-		p := stack.pop()
-		if !p.visited {
-			p.visited = true
-
-			for _, neighbour := range p.neighbours {
-				if neighbour.depth > p.depth+1 {
-					neighbour.depth = p.depth + 1
-					// to find the shortest path, re-add visited nodes if the neighbour depth is bigger than p.depth+1
-					neighbour.visited = false
-					stack.push(neighbour)
-				}
-
-				if !neighbour.visited {
-					stack.push(neighbour)
-				}
 			}
 		}
 	}

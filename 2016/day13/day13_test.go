@@ -48,13 +48,17 @@ func TestSolvePartTwo(t *testing.T) {
 		rows        int
 		cols        int
 		designerNum int
+		tX          int
+		tY          int
 	}{
 		rows:        7,
 		cols:        10,
 		designerNum: 10,
+		tX:          7,
+		tY:          4,
 	}
 
-	actual := solvePartTwo(td.rows, td.cols, td.designerNum)
+	actual := solvePartTwo(td.rows, td.cols, td.tX, td.tY, td.designerNum)
 	expected := 19
 
 	if actual != expected {
@@ -71,6 +75,6 @@ func TestSolvePartTwoActual(t *testing.T) {
 	designerNum := 1352
 	buffer := 25 // space to expand the maze
 
-	result := solvePartTwo(tX+buffer, tY+buffer, designerNum)
+	result := solvePartTwo(tX+buffer, tY+buffer, tX, tY, designerNum)
 	fmt.Println(result)
 }
