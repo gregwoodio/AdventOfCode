@@ -20,7 +20,7 @@ func solvePartTwo(input string) int {
 func solve(input, prefix string) int {
 	workers := 25
 	result := make(chan int, 1)
-	done := make(chan bool, 1)
+	done := make(chan bool, workers-1)
 	var solution int
 
 	for i := 0; i < workers; i++ {
@@ -33,7 +33,10 @@ workloop:
 		select {
 		case val := <-result:
 			solution = val
-			done <- true
+
+			for w := 0; w < workers-1; w++ {
+				done <- true
+			}
 			break workloop
 		default:
 		}
