@@ -35,27 +35,22 @@ func parse(inputs []string, isPartTwo bool) int {
 			fmt.Errorf("could not parse %s to int", parts[2])
 		}
 
-		ch := rune(parts[3][0])
+		if !isPartTwo {
+			ch := rune(parts[3][0])
 
-		count := 0
-		for i, letter := range parts[4] {
-			if !isPartTwo {
+			count := 0
+			for _, letter := range parts[4] {
 				if letter == ch {
 					count++
 				}
-			} else {
-				if (i+1 == low && letter == ch) || (i+1 == high && letter == ch) {
-					count++
-				}
 			}
-		}
 
-		if !isPartTwo {
 			if count >= low && count <= high {
 				validPasswords++
 			}
 		} else {
-			if count == 1 {
+			ch := parts[3][0]
+			if (input[low-1] == ch) || (input[high-1] == ch) && input[low-1] != input[high-1] {
 				validPasswords++
 			}
 		}
