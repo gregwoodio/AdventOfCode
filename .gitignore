@@ -1,2 +1,5 @@
 # coverage file
 cover.out
+
+# boilerplate tool binary
+boilerplate

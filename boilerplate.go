@@ -97,16 +97,16 @@ func makeTestFile(day, year int, path string) error {
 	fmt.Fprintf(file, "\tsolution := solvePartOne(aocutil.ReadStringsFromFile(\"./day%02d_input.txt\"))\n", day)
 	fmt.Fprintf(file, "\tfmt.Println(solution)\n}")
 
-	fmt.Fprintf(file, "\n\nfunc Test%dDay%02d_SolvePartTwo(t *testing.T) {\n\n", year, day)
+	fmt.Fprintf(file, "\n\nfunc Test%dDay%02d_SolvePartTwo(t *testing.T) {\n", year, day)
 	fmt.Fprintf(file, "\tinputs := []string{\n\t\t\"foo\",\n\t}\n\n")
 	fmt.Fprintf(file, "\texpected := -1\n\tactual := solvePartTwo(inputs)\n")
 	fmt.Fprintf(file, "\tif actual != expected {\n")
 	fmt.Fprint(file, "\t\tt.Errorf(\"Expected %"+"d but was %"+"d\", expected, actual)\n\t}\n}")
 
-	fmt.Fprintf(file, "\n\nfunc Test%dDay%02d_SolvePartTwoActual(t *testing.T) {\n\n", year, day)
+	fmt.Fprintf(file, "\n\nfunc Test%dDay%02d_SolvePartTwoActual(t *testing.T) {\n", year, day)
 	fmt.Fprintf(file, "\tif testing.Short() {\n")
 	fmt.Fprintf(file, "\t\tt.Skip(\"Skipping actual solution\")\n\t}\n\n")
-	fmt.Fprintf(file, "\tsolution := solvePartOne(aocutil.ReadStringsFromFile(\"./day%02d_input.txt\"))\n", day)
+	fmt.Fprintf(file, "\tsolution := solvePartTwo(aocutil.ReadStringsFromFile(\"./day%02d_input.txt\"))\n", day)
 	fmt.Fprintf(file, "\tfmt.Println(solution)\n}")
 
 	return nil
