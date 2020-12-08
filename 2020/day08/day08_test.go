@@ -36,31 +36,31 @@ func Test2020Day08_SolvePartOneActual(t *testing.T) {
 	fmt.Println(solution)
 }
 
-// func Test2020Day08_SolvePartTwo(t *testing.T) {
-// 	inputs := []string{
-// 		"nop +0",
-// 		"acc +1",
-// 		"jmp +4",
-// 		"acc +3",
-// 		"jmp -3",
-// 		"acc -99",
-// 		"acc +1",
-// 		"jmp -4",
-// 		"acc +6",
-// 	}
+func Test2020Day08_SolvePartTwo(t *testing.T) {
+	inputs := []string{
+		"nop +0",
+		"acc +1",
+		"jmp +4",
+		"acc +3",
+		"jmp -3",
+		"acc -99",
+		"acc +1",
+		"jmp -4",
+		"acc +6",
+	}
 
-// 	expected := 8
-// 	actual := solvePartTwo(inputs)
-// 	if actual != expected {
-// 		t.Errorf("Expected %d but was %d", expected, actual)
-// 	}
-// }
+	expected := 8
+	actual := solvePartTwo(inputs)
+	if actual != expected {
+		t.Errorf("Expected %d but was %d", expected, actual)
+	}
+}
 
-// func Test2020Day08_SolvePartTwoActual(t *testing.T) {
-// 	if testing.Short() {
-// 		t.Skip("Skipping actual solution")
-// 	}
+func Test2020Day08_SolvePartTwoActual(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping actual solution")
+	}
 
-// 	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day08_input.txt"))
-// 	fmt.Println(solution)
-// }
+	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day08_input.txt"))
+	fmt.Println(solution)
+}

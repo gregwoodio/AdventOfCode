@@ -47,7 +47,58 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	instructions := parseInstructions(input)
+	accumulator := 0
+	index := 0
+	switchIndex := findNextJmpOrNop(-1, instructions)
+
+	for {
+
+		for {
+			if index == len(instructions) {
+				return accumulator
+			}
+
+			if instructions[index].executed {
+				break
+			}
+
+			instructions[index].executed = true
+			if index == switchIndex {
+				switch instructions[index].op {
+				case jmp:
+					index++
+					break
+				case nop:
+					index += instructions[index].value
+					break
+				}
+			} else {
+				switch instructions[index].op {
+				case acc:
+					accumulator += instructions[index].value
+					index++
+					break
+				case jmp:
+					index += instructions[index].value
+					break
+				case nop:
+					index++
+					break
+				}
+			}
+		}
+
+		switchIndex = findNextJmpOrNop(switchIndex, instructions)
+		accumulator = 0
+		index = 0
+		accumulator = 0
+		index = 0
+
+		for i := range instructions {
+			instructions[i].executed = false
+		}
+	}
 }
 
 func parseInstructions(input []string) []instruction {
@@ -87,4 +138,14 @@ func parseInstructions(input []string) []instruction {
 	}
 
 	return instructions
+}
+
+func findNextJmpOrNop(start int, instructions []instruction) int {
+	for i := start + 1; i < len(instructions); i++ {
+		if instructions[i].op == jmp || instructions[i].op == nop {
+			return i
+		}
+	}
+
+	return -1
 }
