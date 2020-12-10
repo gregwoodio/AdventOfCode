@@ -2,23 +2,9 @@ package day10
 
 import "sort"
 
-type numbers []int
-
-func (n numbers) Len() int {
-	return len(n)
-}
-
-func (n numbers) Less(i, j int) bool {
-	return n[i] < n[j]
-}
-
-func (n numbers) Swap(i, j int) {
-	n[i], n[j] = n[j], n[i]
-}
-
-func solvePartOne(input numbers) int {
+func solvePartOne(input []int) int {
 	input = append(input, 0)
-	sort.Sort(input)
+	sort.Ints(input)
 
 	// add three more than highest value
 	input = append(input, input[len(input)-1]+3)
@@ -37,55 +23,20 @@ func solvePartOne(input numbers) int {
 	return ones * threes
 }
 
-type node struct {
-	value   int
-	visited int
-	next    []*node
-}
-
-func solvePartTwo(input numbers) int {
+func solvePartTwo(input []int) int {
 	input = append(input, 0)
-	sort.Sort(input)
+	sort.Ints(input)
 
 	// add three more than highest value
 	input = append(input, input[len(input)-1]+3)
 
-	// make tree
-	nodes := []*node{}
-	for _, val := range input {
-		nodes = append(nodes, &node{
-			value: val,
-			next:  []*node{},
-		})
+	paths := make(map[int]int)
+	paths[0] = 1
+
+	for _, num := range input[1:] {
+		paths[num] = paths[num-1] + paths[num-2] + paths[num-3]
 	}
 
-	for i := 0; i < len(nodes); i++ {
-		for j := i + 1; j < i+5 && j < len(nodes); j++ {
-			if nodes[j].value <= nodes[i].value+3 {
-				nodes[i].next = append(nodes[i].next, nodes[j])
-			} else {
-				break
-			}
-		}
-	}
-
-	queue := []*node{
-		nodes[0],
-	}
-
-	for {
-		if len(queue) == 0 {
-			break
-		}
-
-		n := queue[0]
-		n.visited++
-		queue = queue[1:]
-
-		for _, next := range n.next {
-			queue = append(queue, next)
-		}
-	}
-
-	return nodes[len(nodes)-1].visited
+	max := input[len(input)-1]
+	return paths[max]
 }
