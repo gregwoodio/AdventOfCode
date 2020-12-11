@@ -1,7 +1,5 @@
 package day11
 
-import "fmt"
-
 type coord struct {
 	x, y       int
 	isChair    bool
@@ -14,10 +12,31 @@ type waitingRoom struct {
 	seatsOccupied int
 }
 
-func (wr waitingRoom) simulate() int {
+func (wr waitingRoom) checkDirectionForNeighbour(x, y, dx, dy int, isPartTwo bool) bool {
+	// are we still in the grid?
+	if x+dx < 0 || x+dx >= len(wr.coords[0]) || y+dy < 0 || y+dy >= len(wr.coords) {
+		return false
+	}
+
+	if !isPartTwo {
+		if wr.coords[y+dy][x+dx].isChair && wr.coords[y+dy][x+dx].isOccupied {
+			return true
+		}
+		return false
+	}
+
+	// empty floor, keep looking
+	if !wr.coords[y+dy][x+dx].isChair {
+		return wr.checkDirectionForNeighbour(x+dx, y+dy, dx, dy, isPartTwo)
+	}
+
+	return wr.coords[y+dy][x+dx].isOccupied
+}
+
+func (wr waitingRoom) simulate(isPartTwo bool) int {
 	wr.rounds = 1
 	for {
-		fmt.Println()
+		// fmt.Println()
 
 		new := [][]*coord{}
 		wr.seatsOccupied = 0
@@ -31,33 +50,33 @@ func (wr waitingRoom) simulate() int {
 						y:       y,
 						isChair: false,
 					})
-					fmt.Print(".")
+					// fmt.Print(".")
 					continue
 				}
 
 				neighbours := 0
-				if x-1 >= 0 && y-1 >= 0 && wr.coords[y-1][x-1].isChair && wr.coords[y-1][x-1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, -1, -1, isPartTwo) {
 					neighbours++
 				}
-				if x-1 >= 0 && wr.coords[y][x-1].isChair && wr.coords[y][x-1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, -1, 0, isPartTwo) {
 					neighbours++
 				}
-				if x-1 >= 0 && y+1 < len(wr.coords) && wr.coords[y+1][x-1].isChair && wr.coords[y+1][x-1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, -1, 1, isPartTwo) {
 					neighbours++
 				}
-				if y-1 >= 0 && wr.coords[y-1][x].isChair && wr.coords[y-1][x].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, 0, -1, isPartTwo) {
 					neighbours++
 				}
-				if y+1 < len(wr.coords) && wr.coords[y+1][x].isChair && wr.coords[y+1][x].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, 0, 1, isPartTwo) {
 					neighbours++
 				}
-				if x+1 < len(row) && y-1 >= 0 && wr.coords[y-1][x+1].isChair && wr.coords[y-1][x+1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, 1, -1, isPartTwo) {
 					neighbours++
 				}
-				if x+1 < len(row) && wr.coords[y][x+1].isChair && wr.coords[y][x+1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, 1, 0, isPartTwo) {
 					neighbours++
 				}
-				if x+1 < len(row) && y+1 < len(wr.coords) && wr.coords[y+1][x+1].isChair && wr.coords[y+1][x+1].isOccupied {
+				if wr.checkDirectionForNeighbour(x, y, 1, 1, isPartTwo) {
 					neighbours++
 				}
 
@@ -68,23 +87,23 @@ func (wr waitingRoom) simulate() int {
 				}
 				if neighbours == 0 && !c.isOccupied {
 					newChair.isOccupied = true
-				} else if c.isOccupied && neighbours >= 4 {
+				} else if !isPartTwo && c.isOccupied && neighbours >= 4 || c.isOccupied && neighbours >= 5 {
 					newChair.isOccupied = false
 				} else {
 					newChair.isOccupied = c.isOccupied
 				}
 
 				if newChair.isOccupied {
-					fmt.Print("#")
+					// fmt.Print("#")
 					wr.seatsOccupied++
-				} else {
-					fmt.Print("L")
+					// } else {
+					// 	fmt.Print("L")
 				}
 
 				new[y] = append(new[y], newChair)
 			}
 
-			fmt.Println()
+			// fmt.Println()
 		}
 
 		isSame := true
@@ -110,19 +129,21 @@ func (wr waitingRoom) simulate() int {
 
 func solvePartOne(input []string) int {
 	wr := makeWaitingRoom(input)
-	seatsOccupied := wr.simulate()
+	seatsOccupied := wr.simulate(false)
 	return seatsOccupied
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	wr := makeWaitingRoom(input)
+	seatsOccupied := wr.simulate(true)
+	return seatsOccupied
 }
 
 func makeWaitingRoom(input []string) *waitingRoom {
 	wr := waitingRoom{}
 	wr.coords = [][]*coord{}
 
-	fmt.Println("Initial:")
+	//fmt.Println("Initial:")
 
 	for y, line := range input {
 		wr.coords = append(wr.coords, []*coord{})
@@ -140,14 +161,13 @@ func makeWaitingRoom(input []string) *waitingRoom {
 
 			wr.coords[y] = append(wr.coords[y], c)
 
-			if c.isChair {
-				fmt.Print("L")
-			} else {
-				fmt.Print(".")
-			}
+			// if c.isChair {
+			// 	fmt.Print("L")
+			// } else {
+			// 	fmt.Print(".")
+			// }
 		}
-
-		fmt.Println()
+		// fmt.Println()
 	}
 
 	return &wr
