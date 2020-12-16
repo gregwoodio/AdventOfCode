@@ -41,10 +41,20 @@ func Test2020Day16_SolvePartOneActual(t *testing.T) {
 
 func Test2020Day16_SolvePartTwo(t *testing.T) {
 	inputs := []string{
-		"foo",
+		"class: 0-1 or 4-19",
+		"row: 0-5 or 8-19",
+		"seat: 0-13 or 16-19",
+		"",
+		"your ticket:",
+		"11,12,13",
+		"",
+		"nearby tickets:",
+		"3,9,18",
+		"15,1,5",
+		"5,14,9",
 	}
 
-	expected := -1
+	expected := 1
 	actual := solvePartTwo(inputs)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)

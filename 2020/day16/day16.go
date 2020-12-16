@@ -13,33 +13,117 @@ type inclusiveRange struct {
 
 func solvePartOne(input []string) int {
 	validRanges, _, tickets := parseInput(input)
+	_, sum := removeInvalidTickets(tickets, validRanges)
+	return sum
+}
 
+func solvePartTwo(input []string) int {
+	validRanges, myTicket, tickets := parseInput(input)
+	tickets, _ = removeInvalidTickets(tickets, validRanges)
+
+	// anything's possible!
+	possibleIndex := make(map[string][]int)
+	for field := range validRanges {
+		indexes := make([]int, len(myTicket))
+		for i := range indexes {
+			indexes[i] = i
+		}
+
+		possibleIndex[field] = indexes
+	}
+
+	for field, ranges := range validRanges {
+		for i := 0; i < len(myTicket); i++ {
+			canBeField := true
+			for _, ticket := range tickets {
+				if !(ranges[0].low <= ticket[i] && ticket[i] <= ranges[0].high) && !(ranges[1].low <= ticket[i] && ticket[i] <= ranges[1].high) {
+					canBeField = false
+					break
+				}
+			}
+
+			if !canBeField {
+				possibleIndex[field] = removeValue(possibleIndex[field], i)
+			}
+		}
+	}
+
+	// look for fields that have only one possible index, then remove that index from
+	// the other fields until all fields only have one possible index.
+	for {
+		// check to break
+		multiplePossibilities := false
+		for _, possible := range possibleIndex {
+			if len(possible) > 1 {
+				multiplePossibilities = true
+			}
+		}
+
+		if !multiplePossibilities {
+			break
+		}
+
+		// check for singles
+		for i, possible := range possibleIndex {
+			if len(possible) == 1 {
+				for j := range possibleIndex {
+					if j == i {
+						continue
+					}
+
+					possibleIndex[j] = removeValue(possibleIndex[j], possible[0])
+				}
+			}
+		}
+	}
+
+	prod := 1
+	for key, val := range possibleIndex {
+		if strings.HasPrefix(key, "departure") {
+			prod *= myTicket[val[0]]
+		}
+	}
+
+	return prod
+}
+
+func removeInvalidTickets(tickets [][]int, validRanges map[string][]inclusiveRange) ([][]int, int) {
 	sum := 0
-	for _, ticket := range tickets {
+	tc := make([][]int, len(tickets))
+	copy(tc, tickets)
+
+	remove := []int{}
+	for i, ticket := range tickets {
+		validTicket := true
 		for _, val := range ticket {
-			invalid := true
+			invalidField := true
 
 		rangeCheck:
 			for _, ranges := range validRanges {
 				for _, r := range ranges {
 					if r.low <= val && val <= r.high {
-						invalid = false
+						invalidField = false
 						break rangeCheck
 					}
 				}
 			}
 
-			if invalid {
+			if invalidField {
+				validTicket = false
 				sum += val
 			}
 		}
+
+		if !validTicket {
+			remove = append([]int{i}, remove...)
+		}
 	}
 
-	return sum
-}
+	for _, r := range remove {
+		tc = append(tc[:r], tc[r+1:]...)
+	}
 
-func solvePartTwo(input []string) int {
-	return -1
+	return tc, sum
 }
 
 // parse input finds the values valid for each field, the numbers from your ticket,
@@ -109,5 +193,16 @@ func parseLineToIntSlice(line string) []int {
 
 		slice = append(slice, val)
 	}
+	return slice
+}
+
+func removeValue(slice []int, value int) []int {
+	for idx, val := range slice {
+		if val == value {
+			slice = append(slice[:idx], slice[idx+1:]...)
+			break
+		}
+	}
+
 	return slice
 }
