@@ -43,11 +43,24 @@ func Test2020Day22_SolvePartOneActual(t *testing.T) {
 
 func Test2020Day22_SolvePartTwo(t *testing.T) {
 	inputs := []string{
-		"foo",
+		"Player 1:",
+		"9",
+		"2",
+		"6",
+		"3",
+		"1",
+		"",
+		"Player 2:",
+		"5",
+		"8",
+		"4",
+		"7",
+		"10",
+		"",
 	}
 
-	expected := -1
-	actual := solvePartTwo(inputs)
+	expected := 291
+	actual := solvePartTwo(inputs, true)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)
 	}
@@ -58,6 +71,6 @@ func Test2020Day22_SolvePartTwoActual(t *testing.T) {
 		t.Skip("Skipping actual solution")
 	}
 
-	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day22_input.txt"))
+	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day22_input.txt"), false)
 	fmt.Println(solution)
 }
