@@ -12,9 +12,32 @@ type cup struct {
 }
 
 func solvePartOne(input string) string {
-	curr, low, high := makeCircle(input)
+	curr, low, high, dict := makeCircle(input, false)
 
-	for i := 0; i < 100; i++ {
+	play(curr, 100, low, high, dict)
+
+	result := ""
+
+	curr = dict[1].clockwise
+	for curr.id != 1 {
+		result += strconv.Itoa(curr.id)
+		curr = curr.clockwise
+	}
+
+	return result
+}
+
+func solvePartTwo(input string) int64 {
+	curr, low, high, dict := makeCircle(input, true)
+
+	play(curr, 10000000, low, high, dict)
+
+	return int64(dict[1].clockwise.id) * int64(dict[1].clockwise.clockwise.id)
+}
+
+func play(curr *cup, rounds, low, high int, dict map[int]*cup) *cup {
+
+	for i := 0; i < rounds; i++ {
 		sublistStart := curr.clockwise
 		sublistEnd := sublistStart.clockwise.clockwise
 		connect := sublistEnd.clockwise
@@ -53,14 +76,7 @@ func solvePartOne(input string) string {
 			}
 		}
 
-		destStart := curr.clockwise
-		for {
-			if destStart.id == target {
-				break
-			}
-
-			destStart = destStart.clockwise
-		}
+		destStart := dict[target]
 
 		destEnd := destStart.clockwise
 		destStart.clockwise = sublistStart
@@ -72,29 +88,13 @@ func solvePartOne(input string) string {
 		curr = curr.clockwise
 	}
 
-	result := ""
-
-	for curr.id != 1 {
-		curr = curr.clockwise
-	}
-
-	curr = curr.clockwise
-	for curr.id != 1 {
-		result += strconv.Itoa(curr.id)
-		curr = curr.clockwise
-	}
-
-	return result
+	return curr
 }
 
-func solvePartTwo(input string) string {
-	return ""
-}
-
-// makes the linked list of cups, returns current cup, low and high values
-func makeCircle(input string) (*cup, int, int) {
+func makeCircle(input string, isPartTwo bool) (*cup, int, int, map[int]*cup) {
 	var curr, c, last *cup
 	low, high := math.MaxInt32, 0
+	dict := make(map[int]*cup)
 
 	for _, ch := range input {
 		id, _ := strconv.Atoi(string(ch))
@@ -109,6 +109,7 @@ func makeCircle(input string) (*cup, int, int) {
 		c = &cup{
 			id: id,
 		}
+		dict[id] = c
 
 		if curr == nil {
 			curr = c
@@ -122,8 +123,25 @@ func makeCircle(input string) (*cup, int, int) {
 		last = c
 	}
 
+	if isPartTwo {
+		id := high + 1
+		for count := 9; count < 1000000; count++ {
+			c = &cup{
+				id: id,
+			}
+			dict[id] = c
+
+			last.clockwise = c
+			c.counterClockwise = last
+			id++
+			high++
+
+			last = c
+		}
+	}
+
 	curr.counterClockwise = last
 	last.clockwise = curr
 
-	return curr, low, high
+	return curr, low, high, dict
 }

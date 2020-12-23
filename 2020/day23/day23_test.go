@@ -25,12 +25,12 @@ func Test2020Day23_SolvePartOneActual(t *testing.T) {
 }
 
 func Test2020Day23_SolvePartTwo(t *testing.T) {
-	input := "foo"
+	input := "389125467"
 
-	expected := ""
+	var expected int64 = 149245887792
 	actual := solvePartTwo(input)
 	if actual != expected {
-		t.Errorf("Expected %s but was %s", expected, actual)
+		t.Errorf("Expected %d but was %d", expected, actual)
 	}
 }
 
