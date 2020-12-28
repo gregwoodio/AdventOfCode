@@ -104,7 +104,7 @@ func Test2020Day24_SolvePartTwo(t *testing.T) {
 				"neswnwewnwnwseenwseesewsenwsweewe",
 				"wseweeenwnesenwwwswnew",
 			},
-			10,
+			2208,
 		},
 	}
 
