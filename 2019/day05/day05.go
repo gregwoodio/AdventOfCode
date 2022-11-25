@@ -3,7 +3,7 @@ package day05
 import (
 	"sync"
 
-	"github.com/gregwoodio/aoc2019shared"
+	"github.com/gregwoodio/adventofcode/m/aoc2019shared"
 )
 
 func solve(instructions string, input int64) int64 {

@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 type coord struct {

@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 var regex = `(?P<Name>[a-z]+).*\((?P<Weight>[0-9]+)\) \-\> (?P<Children>.*)`

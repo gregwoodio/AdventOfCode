@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 func Test2020Day13_SolvePartOne(t *testing.T) {

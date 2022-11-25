@@ -83,7 +83,7 @@ func makeTestFile(day, year int, path string) error {
 	defer file.Close()
 
 	fmt.Fprintf(file, "package day%02d\n\n", day)
-	fmt.Fprintf(file, "import (\n\t\"fmt\"\n\t\"testing\"\n\n\t\"github.com/gregwoodio/aocutil\"\n)\n\n")
+	fmt.Fprintf(file, "import (\n\t\"fmt\"\n\t\"testing\"\n\n\t\"github.com/gregwoodio/adventofcode/m/aocutil\"\n)\n\n")
 
 	fmt.Fprintf(file, "func Test%dDay%02d_SolvePartOne(t *testing.T) {\n", year, day)
 	fmt.Fprintf(file, "\tinputs := []string{\n\t\t\"foo\",\n\t}\n")

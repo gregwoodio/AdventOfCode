@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 func TestPartOne(t *testing.T) {

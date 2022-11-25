@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gregwoodio/aoc2019shared"
+	"github.com/gregwoodio/adventofcode/m/aoc2019shared"
 )
 
 func solve(input string, inst int) int64 {

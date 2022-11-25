@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package day10
 import (
 	"fmt"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 func solvePartOne(input []string) int {

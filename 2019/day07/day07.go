@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gregwoodio/aoc2019shared"
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
+
+	"github.com/gregwoodio/adventofcode/m/aoc2019shared"
 )
 
 func solve(input string, isPartTwo bool) int64 {

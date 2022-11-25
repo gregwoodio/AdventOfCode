@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/gregwoodio/aocutil"
+	"github.com/gregwoodio/adventofcode/m/aocutil"
 )
 
 var regex = `(?P<TargetReg>[a-z]+) (?P<Inst>((inc)|(dec))) (?P<Increment>\-?[0-9]+) if (?P<CondReg>[a-z]+) (?P<Condition>((==)|(!=)|(\>)|(\>=)|(\<)|(\<=))) (?P<CondValue>\-?[0-9]+)`
