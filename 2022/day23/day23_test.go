@@ -51,12 +51,35 @@ func Test2022Day23_SolvePartOneActual(t *testing.T) {
 	fmt.Println(solution)
 }
 
-func Test2022Day23_SolvePartTwo(t *testing.T) {
+func Test2022Day23_SolvePartTwoShort(t *testing.T) {
 	inputs := []string{
-		"foo",
+		".....",
+		"..##.",
+		"..#..",
+		".....",
+		"..##.",
+		".....",
 	}
 
-	expected := -1
+	expected := 4
+	actual := solvePartTwo(inputs)
+	if actual != expected {
+		t.Errorf("Expected %d but was %d", expected, actual)
+	}
+}
+
+func Test2022Day23_SolvePartTwo(t *testing.T) {
+	inputs := []string{
+		"....#..",
+		"..###.#",
+		"#...#.#",
+		".#...##",
+		"#.###..",
+		"##.#.##",
+		".#..#..",
+	}
+
+	expected := 20
 	actual := solvePartTwo(inputs)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)

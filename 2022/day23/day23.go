@@ -147,6 +147,7 @@ func solvePartOne(input []string) int {
 						}
 					}
 				}
+
 				if !hasProposed {
 					next[elf] = true
 				}
@@ -213,7 +214,109 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	elves := parse(input)
+	directions := []dir{north, south, west, east}
+	canMove := true
+
+	var round int
+	for round = 0; canMove; round++ {
+		canMove = false
+
+		// map proposed coord to list of elves who want to move there
+		proposed := map[coord][]coord{}
+		next := map[coord]bool{}
+
+		for elf := range elves {
+			if !elf.hasNeighbour(elves) {
+				next[elf] = true
+			} else {
+				canMove = true
+				hasProposed := false
+			outer:
+				for _, dir := range directions {
+					switch dir {
+					case north:
+						if !elf.checkNorth(elves) {
+							p := elf.move(transforms[north])
+
+							if _, ok := proposed[p]; !ok {
+								proposed[p] = []coord{}
+							}
+							proposed[p] = append(proposed[p], elf)
+							hasProposed = true
+							break outer
+						}
+					case south:
+						if !elf.checkSouth(elves) {
+							p := elf.move(transforms[south])
+
+							if _, ok := proposed[p]; !ok {
+								proposed[p] = []coord{}
+							}
+							proposed[p] = append(proposed[p], elf)
+							hasProposed = true
+							break outer
+						}
+					case west:
+						if !elf.checkWest(elves) {
+							p := elf.move(transforms[west])
+
+							if _, ok := proposed[p]; !ok {
+								proposed[p] = []coord{}
+							}
+							proposed[p] = append(proposed[p], elf)
+							hasProposed = true
+							break outer
+						}
+					case east:
+						if !elf.checkEast(elves) {
+							p := elf.move(transforms[east])
+
+							if _, ok := proposed[p]; !ok {
+								proposed[p] = []coord{}
+							}
+							proposed[p] = append(proposed[p], elf)
+							hasProposed = true
+							break outer
+						}
+					}
+				}
+
+				if !hasProposed {
+					next[elf] = true
+				}
+			}
+		}
+
+		// // checksum
+		// count := len(next)
+		// for _, movers := range proposed {
+		// 	count += len(movers)
+		// }
+		// if count != len(elves) {
+		// 	panic("Lost some elves!")
+		// }
+
+		// each elf who can move has proposed a new destination. If any
+		// list of proposed coords is longer than 1 add the elf to next
+		// instead.
+		for p, movers := range proposed {
+			if len(movers) > 1 {
+				for _, e := range movers {
+					next[e] = true
+				}
+			} else {
+				next[p] = true
+			}
+		}
+
+		// rotate list
+		directions = append(directions[1:], directions[0])
+
+		elves = next
+	}
+
+	return round
 }
 
 // parse input and return a slice of elf coordinates
