@@ -59,8 +59,8 @@ func Test2022Day15_SolvePartTwo(t *testing.T) {
 		"Sensor at x=20, y=1: closest beacon is at x=15, y=3",
 	}
 
-	expected := -1
-	actual := solvePartTwo(inputs, 10)
+	expected := 56000011
+	actual := solvePartTwo(inputs, 20)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)
 	}
@@ -71,6 +71,6 @@ func Test2022Day15_SolvePartTwoActual(t *testing.T) {
 		t.Skip("Skipping actual solution")
 	}
 
-	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day15_input.txt"), 2000000)
+	solution := solvePartTwo(aocutil.ReadStringsFromFile("./day15_input.txt"), 4000000)
 	fmt.Println(solution)
 }

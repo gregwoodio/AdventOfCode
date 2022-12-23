@@ -9,6 +9,10 @@ type coord struct {
 	x, y int
 }
 
+type coverage struct {
+	start, end int
+}
+
 type beacon struct {
 	pos      coord
 	distance int
@@ -50,7 +54,53 @@ func solvePartOne(input []string, row int) int {
 }
 
 func solvePartTwo(input []string, row int) int {
-	return -1
+	sensors := parse(input)
+	final := coord{}
+
+outer:
+	for y := 0; y <= row; y++ {
+		coverages := []coverage{}
+		for s, b := range sensors {
+			offset := abs(s.y - y)
+			if offset > b.distance {
+				continue
+			}
+			c := coverage{}
+			c.start = s.x - b.distance + offset
+			c.end = s.x + b.distance - offset
+			coverages = append(coverages, c)
+		}
+
+		// more bubble sort 😳
+		swapped := true
+		for swapped {
+			swapped = false
+			for i := 0; i < len(coverages)-1; i++ {
+				if coverages[i].start > coverages[i+1].start {
+					coverages[i], coverages[i+1] = coverages[i+1], coverages[i]
+					swapped = true
+				}
+			}
+		}
+
+		x := 0
+		for _, c := range coverages {
+			if c.start > x {
+				final = coord{x: x, y: y}
+				break outer
+			}
+			if c.end+1 > x {
+				x = c.end + 1
+			}
+		}
+
+		if x <= row {
+			final = coord{x: x, y: y}
+			break outer
+		}
+	}
+
+	return final.x*4000000 + final.y
 }
 
 func parse(input []string) map[coord]beacon {
