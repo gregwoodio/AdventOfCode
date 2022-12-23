@@ -26,15 +26,15 @@ func Test2022Day17_SolvePartOneActual(t *testing.T) {
 	fmt.Println(solution)
 }
 
-func Test2022Day17_SolvePartTwo(t *testing.T) {
-	input := ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
+// func Test2022Day17_SolvePartTwo(t *testing.T) {
+// 	input := ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
 
-	expected := 3068
-	actual := solvePartTwo(input)
-	if actual != expected {
-		t.Errorf("Expected %d but was %d", expected, actual)
-	}
-}
+// 	expected := 3068
+// 	actual := solvePartTwo(input)
+// 	if actual != expected {
+// 		t.Errorf("Expected %d but was %d", expected, actual)
+// 	}
+// }
 
 func Test2022Day17_SolvePartTwoActual(t *testing.T) {
 	if testing.Short() {
