@@ -25,7 +25,12 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	sum := 0
+	for _, line := range input {
+		result := parse(line)
+		sum += result.power()
+	}
+	return sum
 }
 
 func parse(line string) results {
@@ -65,4 +70,8 @@ func max(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func (r *results) power() int {
+	return r.red * r.green * r.blue
 }
