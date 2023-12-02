@@ -32,6 +32,21 @@ func solvePartOne(input []string) int {
 func solvePartTwo(input []string) int {
 	sum := 0
 
+	wordValues := []struct {
+		word  string
+		value int
+	}{
+		{"one", 1},
+		{"two", 2},
+		{"three", 3},
+		{"four", 4},
+		{"five", 5},
+		{"six", 6},
+		{"seven", 7},
+		{"eight", 8},
+		{"nine", 9},
+	}
+
 	for _, line := range input {
 		var first, last int
 		var hasFirst bool
@@ -46,80 +61,17 @@ func solvePartTwo(input []string) int {
 				}
 
 				last, _ = strconv.Atoi(string(ch))
-			} else if ch == 'o' {
-				if i+2 < len(line) && line[i+1] == 'n' && line[i+2] == 'e' {
-					if !hasFirst {
-						first = 1
-						hasFirst = true
-					}
-					last = 1
-				}
-			} else if ch == 't' {
-				if i+2 < len(line) && line[i+1] == 'w' && line[i+2] == 'o' {
-					if !hasFirst {
-						first = 2
-						hasFirst = true
-					}
-					last = 2
-				}
+			} else {
+				for _, wordValue := range wordValues {
+					if checkContains(wordValue.word, line, i) {
+						if !hasFirst {
+							first = wordValue.value
+							hasFirst = true
+						}
 
-				if i+4 < len(line) && line[i+1] == 'h' && line[i+2] == 'r' && line[i+3] == 'e' && line[i+4] == 'e' {
-					if !hasFirst {
-						first = 3
-						hasFirst = true
+						last = wordValue.value
+						break
 					}
-					last = 3
-				}
-
-			} else if ch == 'f' {
-				if i+3 < len(line) && line[i+1] == 'o' && line[i+2] == 'u' && line[i+3] == 'r' {
-					if !hasFirst {
-						first = 4
-						hasFirst = true
-					}
-					last = 4
-				}
-
-				if i+3 < len(line) && line[i+1] == 'i' && line[i+2] == 'v' && line[i+3] == 'e' {
-					if !hasFirst {
-						first = 5
-						hasFirst = true
-					}
-					last = 5
-				}
-
-			} else if ch == 's' {
-				if i+2 < len(line) && line[i+1] == 'i' && line[i+2] == 'x' {
-					if !hasFirst {
-						first = 6
-						hasFirst = true
-					}
-					last = 6
-				}
-
-				if i+4 < len(line) && line[i+1] == 'e' && line[i+2] == 'v' && line[i+3] == 'e' && line[i+4] == 'n' {
-					if !hasFirst {
-						first = 7
-						hasFirst = true
-					}
-					last = 7
-				}
-			} else if ch == 'e' {
-				if i+4 < len(line) && line[i+1] == 'i' && line[i+2] == 'g' && line[i+3] == 'h' && line[i+4] == 't' {
-					if !hasFirst {
-						first = 8
-						hasFirst = true
-					}
-					last = 8
-				}
-
-			} else if ch == 'n' {
-				if i+3 < len(line) && line[i+1] == 'i' && line[i+2] == 'n' && line[i+3] == 'e' {
-					if !hasFirst {
-						first = 9
-						hasFirst = true
-					}
-					last = 9
 				}
 
 			}
@@ -129,4 +81,18 @@ func solvePartTwo(input []string) int {
 	}
 
 	return sum
+}
+
+func checkContains(word string, line string, i int) bool {
+	if i+len(word) > len(line) {
+		return false
+	}
+
+	for j, ch := range word {
+		if rune(line[i+j]) != ch {
+			return false
+		}
+	}
+
+	return true
 }
