@@ -32,7 +32,27 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	time := parseLinePart2(input[0])
+	distance := parseLinePart2(input[1])
+	totalResults := []int{}
+
+	results := 0
+
+	for wait := 1; wait < time; wait++ {
+		result := (time - wait) * wait
+		if result > distance {
+			results++
+		}
+	}
+
+	totalResults = append(totalResults, results)
+
+	total := totalResults[0]
+	for i := 1; i < len(totalResults); i++ {
+		total *= totalResults[i]
+	}
+
+	return total
 }
 
 func parseLine(line string) []int {
@@ -52,6 +72,13 @@ func parseLine(line string) []int {
 	}
 
 	return nums
+}
+
+func parseLinePart2(line string) int {
+	line = strings.ReplaceAll(line, " ", "")
+	numStr := line[strings.Index(line, ":")+1:]
+	num, _ := strconv.Atoi(numStr)
+	return num
 }
 
 func max(a, b int) int {

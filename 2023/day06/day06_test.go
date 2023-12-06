@@ -31,10 +31,11 @@ func Test2023Day06_SolvePartOneActual(t *testing.T) {
 
 func Test2023Day06_SolvePartTwo(t *testing.T) {
 	inputs := []string{
-		"foo",
+		"Time:      7 15 30",
+		"Distance:  9 40 200",
 	}
 
-	expected := -1
+	expected := 71503
 	actual := solvePartTwo(inputs)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)
