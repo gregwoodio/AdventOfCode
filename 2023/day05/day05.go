@@ -19,6 +19,27 @@ func solvePartOne(input []string) int {
 		seeds = append(seeds, seed)
 	}
 
+	return solve(seeds, input)
+}
+
+func solvePartTwo(input []string) int {
+	seedRanges := []int{}
+	for _, str := range strings.Split(input[0][len("seeds: "):], " ") {
+		seed, _ := strconv.Atoi(str)
+		seedRanges = append(seedRanges, seed)
+	}
+
+	seeds := []int{}
+	for i := 0; i < len(seedRanges); i += 2 {
+		for j := 0; j < seedRanges[i+1]; j++ {
+			seeds = append(seeds, seedRanges[i]+j)
+		}
+	}
+
+	return solve(seeds, input)
+}
+
+func solve(seeds []int, input []string) int {
 	// updateable slice of values to apply maps to
 	values := []int{}
 	values = append(values, seeds...)
@@ -57,10 +78,6 @@ func solvePartOne(input []string) int {
 	}
 
 	return lowest
-}
-
-func solvePartTwo(input []string) int {
-	return -1
 }
 
 func parseAlmanacMap(line string) almanacMap {
