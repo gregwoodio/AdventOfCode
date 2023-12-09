@@ -32,10 +32,12 @@ func Test2023Day09_SolvePartOneActual(t *testing.T) {
 
 func Test2023Day09_SolvePartTwo(t *testing.T) {
 	inputs := [][]int{
-		[]int{},
+		{0, 3, 6, 9, 12, 15},
+		{1, 3, 6, 10, 15, 21},
+		{10, 13, 16, 21, 30, 45},
 	}
 
-	expected := -1
+	expected := 2
 	actual := solvePartTwo(inputs)
 	if actual != expected {
 		t.Errorf("Expected %d but was %d", expected, actual)

@@ -33,7 +33,35 @@ func solvePartOne(input [][]int) int {
 }
 
 func solvePartTwo(input [][]int) int {
-	return -1
+	sum := 0
+
+	for _, line := range input {
+		diffs := [][]int{line}
+
+		for !isAllZero(diffs[len(diffs)-1]) {
+			last := len(diffs) - 1
+			diff := make([]int, len(diffs[last])-1)
+
+			for i := 0; i < len(diffs[last])-1; i++ {
+				diff[i] = diffs[last][i+1] - diffs[last][i]
+			}
+
+			diffs = append(diffs, diff)
+		}
+
+		// extrapolate, add a new 0 to the beginning of the last diff
+		diffs[len(diffs)-1] = append([]int{0}, diffs[len(diffs)-1]...)
+
+		for i := len(diffs) - 2; i >= 0; i-- {
+			nextLast := diffs[i+1][0]
+			last := diffs[i][0]
+			diffs[i] = append([]int{last - nextLast}, diffs[i]...)
+		}
+
+		sum += diffs[0][0]
+	}
+
+	return sum
 }
 
 func isAllZero(input []int) bool {
