@@ -3,3 +3,6 @@ cover.out
 
 # boilerplate tool binary
 boilerplate
+
+# real inputs
+*.txt
