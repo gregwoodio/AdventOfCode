@@ -87,11 +87,13 @@ func checkConnectionLeft(from, to rune) bool {
 	return (from == '-' || from == '7' || from == 'J' || from == 'S') && (to == '-' || to == 'F' || to == 'L' || to == 'S')
 }
 
-func solvePartOne(input []string) int {
-	start := parseInput(input)
-
+// Traverse the graph and return the max weight and map of nodes included in the path
+func traverse(start *node) (int, map[point]*node) {
 	stack := []*node{start}
 	max := 0
+
+	nodes := map[point]*node{}
+	nodes[start.pos] = start
 
 	for len(stack) > 0 {
 		current := stack[0]
@@ -104,24 +106,170 @@ func solvePartOne(input []string) int {
 		if current.up != nil && current.up.weight > current.weight+1 {
 			current.up.weight = current.weight + 1
 			stack = append(stack, current.up)
+			nodes[current.up.pos] = current.up
 		}
 		if current.down != nil && current.down.weight > current.weight+1 {
 			current.down.weight = current.weight + 1
 			stack = append(stack, current.down)
+			nodes[current.down.pos] = current.down
 		}
 		if current.left != nil && current.left.weight > current.weight+1 {
 			current.left.weight = current.weight + 1
 			stack = append(stack, current.left)
+			nodes[current.left.pos] = current.left
 		}
 		if current.right != nil && current.right.weight > current.weight+1 {
 			current.right.weight = current.weight + 1
 			stack = append(stack, current.right)
+			nodes[current.right.pos] = current.right
 		}
 	}
 
+	return max, nodes
+}
+
+func solvePartOne(input []string) int {
+	start := parseInput(input)
+	max, _ := traverse(start)
 	return max
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	start := parseInput(input)
+	_, nodes := traverse(start)
+
+	bigNodes := map[point]rune{}
+
+	// all nodes, but big
+	for y := range input {
+		for yMul := 0; yMul < 3; yMul++ {
+			for x := range input[y] {
+				for xMul := 0; xMul < 3; xMul++ {
+					if node, ok := nodes[point{x: x, y: y}]; ok {
+						if node.ch == '-' {
+							if yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == '|' {
+							if xMul == 1 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == '7' {
+							if xMul == 0 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else if xMul == 1 && yMul == 1 {
+								// fmt.Print("7")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '7'
+							} else if xMul == 1 && yMul == 2 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == 'J' {
+							if xMul == 1 && yMul == 0 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else if xMul == 1 && yMul == 1 {
+								// fmt.Print("J")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = 'J'
+							} else if xMul == 0 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == 'L' {
+							if xMul == 1 && yMul == 0 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else if xMul == 1 && yMul == 1 {
+								// fmt.Print("L")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = 'L'
+							} else if xMul == 2 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == 'F' {
+							if xMul == 1 && yMul == 1 {
+								// fmt.Print("F")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = 'F'
+							} else if xMul == 2 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else if xMul == 1 && yMul == 2 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						} else if node.ch == 'S' {
+							if node.up != nil && xMul == 1 && yMul == 0 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else if node.left != nil && xMul == 0 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else if node.down != nil && xMul == 1 && yMul == 2 {
+								// fmt.Print("|")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '|'
+							} else if node.right != nil && xMul == 2 && yMul == 1 {
+								// fmt.Print("-")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '-'
+							} else if xMul == 1 && yMul == 1 {
+								// fmt.Print("S")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = 'S'
+							} else {
+								// fmt.Print(" ")
+								bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+							}
+						}
+					} else if xMul == 1 && yMul == 1 {
+						// fmt.Print(".")
+						bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = '.'
+					} else {
+						// fmt.Print(" ")
+						bigNodes[point{x: x*3 + xMul, y: y*3 + yMul}] = ' '
+					}
+				}
+			}
+			// fmt.Printf("\n")
+		}
+	}
+
+	flood(point{x: 0, y: 0}, bigNodes)
+
+	sum := 0
+	for _, n := range bigNodes {
+		if n == '.' {
+			sum++
+		}
+	}
+
+	return sum
+}
+
+func flood(p point, nodes map[point]rune) {
+	if nodes[p] == ' ' || nodes[p] == '.' {
+		nodes[p] = 'X'
+		flood(p.add(up), nodes)
+		flood(p.add(down), nodes)
+		flood(p.add(left), nodes)
+		flood(p.add(right), nodes)
+	}
 }
