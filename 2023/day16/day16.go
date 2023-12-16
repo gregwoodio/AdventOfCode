@@ -35,7 +35,10 @@ type beam struct {
 
 func solvePartOne(input []string) int {
 	board := parseInput(input)
-	simulate(board)
+	simulate(board, beam{
+		facing:   east,
+		location: point{0, 0},
+	})
 
 	sum := 0
 	for _, row := range board {
@@ -50,7 +53,82 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	board := parseInput(input)
+	max := 0
+
+	for y := range board {
+		b1 := parseInput(input)
+		simulate(b1, beam{
+			facing:   east,
+			location: point{0, y},
+		})
+
+		sum := 0
+		for _, row := range board {
+			for _, square := range row {
+				if square.energized {
+					sum++
+				}
+			}
+		}
+		if sum > max {
+			max = sum
+		}
+
+		b2 := parseInput(input)
+		simulate(b2, beam{
+			facing:   west,
+			location: point{len(b2[0]) - 1, y},
+		})
+		sum = 0
+		for _, row := range b2 {
+			for _, square := range row {
+				if square.energized {
+					sum++
+				}
+			}
+		}
+		if sum > max {
+			max = sum
+		}
+	}
+
+	for x := range board[0] {
+		b3 := parseInput(input)
+		simulate(b3, beam{
+			facing:   south,
+			location: point{x, 0},
+		})
+		sum := 0
+		for _, row := range b3 {
+			for _, square := range row {
+				if square.energized {
+					sum++
+				}
+			}
+		}
+		if sum > max {
+			max = sum
+		}
+		b4 := parseInput(input)
+		simulate(b4, beam{
+			facing:   north,
+			location: point{x, len(b4) - 1},
+		})
+		sum = 0
+		for _, row := range b4 {
+			for _, square := range row {
+				if square.energized {
+					sum++
+				}
+			}
+		}
+		if sum > max {
+			max = sum
+		}
+	}
+
+	return max
 }
 
 func parseInput(input []string) [][]square {
@@ -75,13 +153,10 @@ func parseInput(input []string) [][]square {
 	return board
 }
 
-func simulate(board [][]square) {
+func simulate(board [][]square, initialBeam beam) {
 
 	beams := []beam{
-		{
-			facing:   east,
-			location: point{0, 0},
-		},
+		initialBeam,
 	}
 
 	// Keep track of when we've hit a splitter and actually split (didn't continue in the
