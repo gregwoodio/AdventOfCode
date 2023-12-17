@@ -1,7 +1,7 @@
 package day07
 
 import (
-	"fmt"
+	// "fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -25,10 +25,10 @@ const (
 	ace
 )
 
-type strength int
+type handType int
 
 const (
-	highCard strength = iota
+	highCard handType = iota
 	onePair
 	twoPair
 	threeOfAKind
@@ -38,10 +38,10 @@ const (
 )
 
 type hand struct {
-	cards []card
-	str   strength
-	bid   int
-	value string
+	cards    []card
+	handType handType
+	bid      int
+	value    string
 }
 
 func parseHand(line string) hand {
@@ -87,35 +87,37 @@ func parseHand(line string) hand {
 	}
 	sort.Ints(countValues)
 
-	var str strength
+	var _handType handType
 	highest := countValues[len(countValues)-1]
 	if highest == 5 {
-		str = fiveOfAKind
+		_handType = fiveOfAKind
 	} else if highest == 4 {
-		str = fourOfAKind
+		_handType = fourOfAKind
 	} else if highest == 3 {
 		if len(countValues)-2 >= 0 && countValues[len(countValues)-2] == 2 {
-			str = fullHouse
+			_handType = fullHouse
 		} else {
-			str = threeOfAKind
+			_handType = threeOfAKind
 		}
 	} else if highest == 2 {
 		if len(countValues)-2 >= 0 && countValues[len(countValues)-2] == 2 {
-			str = twoPair
+			_handType = twoPair
 		} else {
-			str = onePair
+			_handType = onePair
 		}
 	} else {
-		str = highCard
+		_handType = highCard
 	}
+
+	// fmt.Printf("Hand: %s \tCount values: %v \t handType: %d\n", parts[0], countValues, _handType)
 
 	bid, _ := strconv.Atoi(parts[1])
 
 	return hand{
-		bid:   bid,
-		cards: cards,
-		str:   str,
-		value: line,
+		bid:      bid,
+		cards:    cards,
+		handType: _handType,
+		value:    line,
 	}
 }
 
@@ -124,11 +126,11 @@ func solvePartOne(input []string) int {
 	for _, line := range input {
 		hands = append(hands, parseHand(line))
 	}
-	fmt.Println(len(hands))
+	// fmt.Println(len(hands))
 
-	sort.SliceStable(hands, func(i, j int) bool {
+	sort.Slice(hands, func(i, j int) bool {
 
-		if hands[i].str == hands[j].str {
+		if hands[i].handType == hands[j].handType {
 			for k := range hands[i].cards {
 				if hands[i].cards[k] != hands[j].cards[k] {
 					return hands[i].cards[k] < hands[j].cards[k]
@@ -136,13 +138,13 @@ func solvePartOne(input []string) int {
 			}
 		}
 
-		return hands[i].str < hands[j].str
+		return hands[i].handType < hands[j].handType
 	})
 
 	sum := 0
 
 	for i, hand := range hands {
-		fmt.Printf("%s \t%d\t%d\t%d\t%d\n", hand.value, hand.str, i+1, hand.bid, (i+1)*hand.bid)
+		// fmt.Printf("%s \t%d\t%d\t%d\t%d\tcurrentSum: %d\n", hand.value, hand.handType, i+1, hand.bid, (i+1)*hand.bid, sum)
 		sum += hand.bid * (i + 1)
 	}
 
