@@ -9,8 +9,11 @@ import (
 
 type card int
 
+type cardPart2 int
+
 const (
-	two card = iota + 2
+	joker card = iota + 1
+	two
 	three
 	four
 	five
@@ -44,7 +47,7 @@ type hand struct {
 	value    string
 }
 
-func parseHand(line string) hand {
+func parseHand(line string, isPartTwo bool) hand {
 	parts := strings.Split(line, " ")
 	counts := map[rune]int{}
 	cards := []card{}
@@ -69,7 +72,11 @@ func parseHand(line string) hand {
 		} else if r == 'T' {
 			cards = append(cards, ten)
 		} else if r == 'J' {
-			cards = append(cards, jack)
+			if isPartTwo {
+				cards = append(cards, joker)
+			} else {
+				cards = append(cards, jack)
+			}
 		} else if r == 'Q' {
 			cards = append(cards, queen)
 		} else if r == 'K' {
@@ -82,13 +89,23 @@ func parseHand(line string) hand {
 	}
 
 	countValues := []int{}
-	for _, value := range counts {
-		countValues = append(countValues, value)
+	jokerCount := 0
+	for r, value := range counts {
+		if isPartTwo && r == 'J' {
+			jokerCount = value
+		} else {
+			countValues = append(countValues, value)
+		}
 	}
 	sort.Ints(countValues)
 
 	var _handType handType
-	highest := countValues[len(countValues)-1]
+	var highest int
+	if len(countValues) == 0 {
+		highest = jokerCount
+	} else {
+		highest = countValues[len(countValues)-1] + jokerCount
+	}
 	if highest == 5 {
 		_handType = fiveOfAKind
 	} else if highest == 4 {
@@ -122,9 +139,13 @@ func parseHand(line string) hand {
 }
 
 func solvePartOne(input []string) int {
+	return solve(input, false)
+}
+
+func solve(input []string, isPartTwo bool) int {
 	hands := []hand{}
 	for _, line := range input {
-		hands = append(hands, parseHand(line))
+		hands = append(hands, parseHand(line, isPartTwo))
 	}
 	// fmt.Println(len(hands))
 
@@ -152,5 +173,5 @@ func solvePartOne(input []string) int {
 }
 
 func solvePartTwo(input []string) int {
-	return -1
+	return solve(input, true)
 }
